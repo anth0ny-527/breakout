@@ -1,7 +1,15 @@
+//////////////////////////////////////////////
+//Assignment/Lab/Project: Breakout Game
+//Name: Tony Zampino
+//Section: SGD.213.0071
+//Instructor: Aurore Locklear
+//Date: 3/31/2026
+/////////////////////////////////////////////
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -11,30 +19,36 @@ public class GameManager : MonoBehaviour
     public int bricks = 20;
     public float resetDelay = 1f;
 
-public TMP_Text livesText;
+    public TMP_Text livesText;
     public GameObject gameOver;
     public GameObject youWon;
-    public GameObject bricksPrefab;
+    public GameObject[] brickPrefabs;   //using an array for the brick prefab so ever level is different
     public GameObject paddle;
 
     private GameObject clonePaddle;
 
     void Awake()
+{
+    if (instance == null)
     {
-        // Singleton setup
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
 
-        Setup();
+        SceneManager.sceneLoaded += OnSceneLoaded; 
     }
+    else
+    {
+        Destroy(gameObject);
+        return;
+    }
+
+    Setup(); // first level
+}
+
+void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    Setup(); //  runs every level change
+}
 
     void Update()
     {
@@ -51,7 +65,16 @@ public TMP_Text livesText;
     public void Setup()
     {
         clonePaddle = Instantiate(paddle, transform.position, Quaternion.identity);
-        Instantiate(bricksPrefab, transform.position, Quaternion.identity);
+       int levelIndex = SceneManager.GetActiveScene().buildIndex;
+
+GameObject newBricks = Instantiate(
+    brickPrefabs[levelIndex],
+    transform.position,
+    Quaternion.identity
+);
+
+
+bricks = newBricks.transform.childCount;
     }
 
     void CheckGameOver()
