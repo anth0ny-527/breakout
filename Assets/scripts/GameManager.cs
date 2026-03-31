@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class GameManager : MonoBehaviour
     public int bricks = 20;
     public float resetDelay = 1f;
 
-    public Text livesText;
+public TMP_Text livesText;
     public GameObject gameOver;
     public GameObject youWon;
     public GameObject bricksPrefab;
